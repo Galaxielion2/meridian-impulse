@@ -1,0 +1,77 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
+import { Logo } from "@/components/brand/logo";
+import { Button } from "@/components/ui/button";
+import { navItems } from "@/lib/site";
+import { cn } from "@/lib/utils";
+
+export function Navbar() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-navy/10 bg-cloud/88 backdrop-blur-xl">
+      <div className="container flex h-20 items-center justify-between">
+        <Logo />
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "rounded-full px-4 py-2 text-sm font-semibold text-navy/70 transition hover:bg-sand/70 hover:text-navy",
+                pathname === item.href && "bg-sand text-navy",
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="hidden items-center gap-3 lg:flex">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/apply-as-talent">Apply</Link>
+          </Button>
+          <Button asChild variant="gold" size="sm">
+            <Link href="/book-a-call">Book a Call</Link>
+          </Button>
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-navy/10 text-navy lg:hidden"
+          aria-label="Open menu"
+        >
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </div>
+      {open ? (
+        <div className="border-t border-navy/10 bg-cloud p-4 lg:hidden">
+          <div className="grid gap-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="rounded-2xl px-4 py-3 text-sm font-semibold text-navy/75 hover:bg-sand"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <div className="grid gap-2 pt-2">
+              <Button asChild variant="outline">
+                <Link href="/apply-as-talent" onClick={() => setOpen(false)}>Apply as Talent</Link>
+              </Button>
+              <Button asChild variant="gold">
+                <Link href="/book-a-call" onClick={() => setOpen(false)}>Book a Call</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </header>
+  );
+}
